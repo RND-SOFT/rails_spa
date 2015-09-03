@@ -156,7 +156,7 @@ div scroll="" rebuild="{{items}}" axis="y"
 ```
 
 ## dcbox
-**dcbox** — отличная альтернатива для lightbox. Не требует никаких зависимостей, выглядит приятно и стабильно работает во всех современных браузерах.
+**dcbox** — отличная альтернатива для lightbox. Не требует никаких зависимостей, выглядит приятно, стабильно работает во всех современных браузерах.
 
 ```
 .dcbox rebuild=""
@@ -167,10 +167,11 @@ div scroll="" rebuild="{{items}}" axis="y"
 ## Attachments
 Строит список ссылок на файлы прикреплений в форме
 ```
-attachments destroy-url="Routes.document_path" attachments="[{href: '/file1', title: 'Файл 1'}, {href: '/file2', title: 'Файл 2'}]"
+attachments destroy-url="Routes.document_path" attachments="[{id: 1, href: '/file1', title: 'Файл 1'}, {id: 2, href: '/file2', title: 'Файл 2'}]"
 ```
 
 ## Слайдер изображений
 ```
-slider destroy-url="Routes.image_path" slides="[{original: '/image1.png', thumb: '/image1-thimb.png'}, {original: '/image2.png', thumb: '/image2-thimb.png'}]"
+slider max-slides="4" destroy-url="Routes.image_path" slides="[{id: 1, original: '/image1.png', thumb: '/image1-thumb.png'}, {id: 2, original: '/image2.png', thumb: '/image2-thumb.png'}]"
 ```
+
