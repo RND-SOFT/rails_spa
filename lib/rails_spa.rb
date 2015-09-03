@@ -1,0 +1,2 @@
+module RailsSpa
+end
