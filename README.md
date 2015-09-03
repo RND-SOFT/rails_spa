@@ -16,6 +16,10 @@
 ```
 gem 'rails_spa', git: 'git@github.com:storuky/rails_spa.git'
 ```
+Следующим шагом требуется подключить компоненты в основной лейаут.
+```
+= render 'rails_spa/components'
+```
 
 Далее необходимо подключить js и css библиотеки в ваши assets-файлы(по умолчанию application.js и application.scss). 
 
