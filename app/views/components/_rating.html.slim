@@ -1,0 +1,4 @@
+script id="rating.html" type="text/ng-template"
+  .stars
+    .star.icon-star_full ng-repeat="score in _.range(score)"
+    .star.icon-star_hollow ng-repeat="score in _.range(5-score)"

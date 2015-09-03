@@ -1,0 +1,11 @@
+script id="slider.html" type="text/ng-template"
+  .slider ng-show="slides.length" ng-class="{single: slides.length<=3}"
+    .slider__prev ng-click="num = num ? num - 1 : 0"
+      i.icon-arrow_left
+    .slider__next ng-click="num = num == slides.length-3 ? num : num + 1"
+      i.icon-arrow_right
+    .slider__body.dcbox
+      div style="margin-left: -{{250*num}}px; transition: .3s;"
+        a.slider__image ng-href="{{slide.original}}" ng-repeat="slide in slides"
+          img ng-src="{{slide.thumb}}"
+          .slider__image__delete ng-show="destroyUrl" ng-click="deleteSlide(slide.id, $index, $event)" &times;

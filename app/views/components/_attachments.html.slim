@@ -1,0 +1,8 @@
+script id="attachments.html" type="text/ng-template"
+  ul.attachments
+    li ng-repeat="attachment in attachments"
+      i.icon-clip
+      a.link ng-href="{{attachment.href}}" target="_blank"
+        | {{attachment.title}}
+      .attachments__delete ng-show="destroyUrl" ng-click="deleteSlide(attachment.id, $index, $event)"
+        | &times;
