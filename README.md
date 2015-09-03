@@ -207,7 +207,7 @@ belongs_to :user
 belongs_to :imageable, polymorphic: true
 ```
 
-Для модели User укажем связь с Image:
+Для моделей User и Post укажем связь с Image:
 ```
 has_many :images
 ```
@@ -260,4 +260,64 @@ end
 Метод associate инкапсулирован внутри гема и доступен внутри любого контроллера, унаследованного от ActionController::Base. Принимает так же поля в качестве массива
 ```
 associate [:images, :documents], for: @post
+```
+
+## Принцип построения SPA-приложения
+Построение рельсового SPA-приложение начинается с редактирования routes.rb
+```
+devise_for :users, controllers: {
+  sessions: 'users/sessions',
+  registrations: 'users/registrations'
+}
+
+root 'application#index'
+
+scope :ajax do
+  get 'home' => 'Home#index'
+  resource :posts
+  # Здесь весь роутинг текущего приложения
+end
+
+get '/*path' => 'application#index'
+```
+
+Мы помещаем все роуты внутрь scope :ajax, тем самым подбавляя к прослушиваемым роутам префикс /ajax. Это необходимо для того, чтобы при нажатии кнопки F5 на странице /posts нам не возвращался template без лейаута, а возвращалась индексная страница приложения, чтобы AngularJS применил свой роутинг для него.
+
+Индексная страница приложения находится в ApplicationController. При этом здесь же мы выключаем рельсовый layout
+
+```
+class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+
+  layout :false
+
+  def index
+    render template: "layouts/application"
+  end
+end
+```
+
+Далее необходимо внутри вьхи views/layouts/application.html.slim зменить =yield на ng-view. Так же необходимо прописать внутри тега head тег
+```
+<base href="/">
+```
+Все готово для того, чтобы строить spa-роутинг приложения. Для этого в /app/assets/javascripts создаем файл routes.js со следующим содержимым:
+
+```
+app.config(['$routeProvider', function ($routeProvider) {  
+  $routeProvider
+    .when('/', {
+      templateUrl: Routes.home_path(),
+      controller: 'HomeCtrl as ctrl',
+      reloadOnSearch: false
+    })
+    .when('/posts', {
+      templateUrl: Routes.posts_path(),
+      controller: 'PostsCtrl as ctrl',
+      reloadOnSearch: false
+    })
+    .otherwise({
+      redirectTo: '/'
+    })
+}]);
 ```
