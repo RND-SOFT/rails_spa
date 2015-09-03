@@ -169,14 +169,92 @@ div scroll="" rebuild="{{items}}" axis="y"
 ```
 attachments destroy-url="Routes.document_path" attachments="[{id: 1, href: '/file1', title: 'Файл 1'}, {id: 2, href: '/file2', title: 'Файл 2'}]"
 ```
+Для задания такого формата используйте gem [active_model_serializers](https://github.com/rails-api/active_model_serializers)
 
 ## Слайдер изображений
 ```
 slider max-slides="4" destroy-url="Routes.image_path" slides="[{id: 1, original: '/image1.png', thumb: '/image1-thumb.png'}, {id: 2, original: '/image2.png', thumb: '/image2-thumb.png'}]"
 ```
+Для задания такого формата используйте gem [active_model_serializers](https://github.com/rails-api/active_model_serializers)
 
 ## TinyMCE
 Требует подключения скриптов и стилей TinyMCE 4
 ```
 textarea.tinymce ng-model="content"
 ```
+
+## Загрузка файлов на сервер
+```
+input type="file" multiple="true" fileupload="Routes.images_path()" ng-model="ctrl.initiative.documents"
+```
+ng-model сочетается с директивами attachments и slider.
+
+Хорошей практикой является предзагрузка файлов на сервер до отправки самой формы. Рассмотрим наиболее общий тип работы с использованием полиморфных связей на примере гема [carrierwave](https://github.com/carrierwaveuploader/carrierwave).
+Создадим модель image
+```
+rails g model image file:string imageable_id:integer imageable_type:integer user_id:integer
+```
+Сгенерируем для нее uploader командой
+```
+rails g uploader image
+```
+
+Внутри модели определим связь и замаунтим загрузчик
+```
+mount_uploader :file, ImageUploader
+
+belongs_to :user
+belongs_to :imageable, polymorphic: true
+```
+
+Для модели User укажем связь с Image:
+```
+has_many :images
+```
+
+Сгенерируем контроллер images
+```
+rails g controller images
+```
+
+Добавим в контроллер images 2 метода.
+
+```
+def create
+  images = params[:attachments].map do |attachment|
+    image = Image.new(file: attachment, user_id: current_user.id)
+    if image.save
+      image
+    else
+      nil
+    end
+  end
+
+  render json: images.compact, each_serializer: ImageSerializer, root: false
+end
+
+def destroy
+  current_user.images.find_by(id: params[:id]).destroy
+  render json: {}
+end
+```
+
+При загрузке изображений, связь будет создаваться только для пользователей. Тогда при сабмите формы мы можем установить связь с моделью уже непосредственно внутри методов create и update модели.
+
+```
+class PostsController < ApplicationController
+  def create
+    @post = current_user.initiatives.new post_params
+
+    if @post.save
+      associate [:documents, :images], for: @post
+      render json: {msg: "Пост успешно создан!"}
+    else
+      render json: {errors: @post.errors}, status: 422
+    end
+  end
+  
+end
+```
+
+Метод associate инкапсулирован внутри гема и доступен внутри любого контроллера, унаследованного от ActionController::Base
