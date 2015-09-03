@@ -28,6 +28,8 @@ gem 'rails_spa'
 angular.module('app', ['rails_spa'])
 ```
 
+Для корректной работы требует гемы [js-routes](https://github.com/railsware/js-routes) и [gon](https://github.com/gazay/gon).
+
 ## Структура приложения
 Для структурированности вашего и его адекватной интеграции с Rails Assets используйте следующую структуру:
 
@@ -43,7 +45,7 @@ angular.module('app', ['rails_spa'])
 ```
 
 ## Контроллеры
-Созданим в каталоге /controllers новый контроллер. Назовем его home_ctrl.js
+Создадим в каталоге /controllers новый контроллер. Назовем его home_ctrl.js. Не стоит жадничать с контроллерами. Хорошей практикой является наличие отдельного контроллера под каждую страницу. В случае похожести контроллеров, общие части следует выносить в сервисы.
 
 ```
 app.controller('HomeCtrl', ['$scope', 'Page', function ($scope, Page) {
@@ -53,4 +55,95 @@ app.controller('HomeCtrl', ['$scope', 'Page', function ($scope, Page) {
 }])
 ```
 
-Сервис Page инкапсулирован внутри 
+Сервис Page инкапсулирован внутри гема. Он отвечает за текущее состояние страницы. В нем удобно хранить название текущей страницы для подсветки соответствующего пункта в меню. Данный сервис находится в $rootScope и доступен внутри шаблнизатора как:
+```
+{{Page.current}}
+```
+
+Для навигации можно использовать следующий прием (синтаксис шаблонизатора [slim](https://github.com/slim-template/slim-rails)):
+
+```
+nav
+  a href="/home" ng-class="{active: Page.current == 'home'}"
+    | Домашняя страница
+```
+
+## Нотификация
+
+Для того, чтобы отобразить пользователю сообщение, пришедшее с сервера, необходимо, чтобы в ответе присутствовало поле msg.
+```
+render json: {msg: "Все отлично"}
+```
+
+В случае ошибки:
+```
+render json: {msg: "Запись не найдена"}, status: 404
+```
+
+## Валидация форм
+
+Для валидации форм необходимо, чтобы каждый элемент формы был обернут в тег с id, соответствующим названию данного поля в базе данных. Тогда в случае наличия в ответе поле errors будет произведена подсветка полей и под каждым полем будет выведена соответстующая ошибка.
+
+```
+render json: {errors: @record.errors}, status: 422
+```
+
+Может быть скомбинировано с нотификацией
+```
+render json: {errors: @record.errors, msg: "Ошибка при сохранении"}, status: 422
+```
+
+## Плюрализация
+
+Написана фабрика и фильтр для плюрализации на русский язык. Может быть вызван внутри шаблонизатора, как
+```
+{{comments.count | plur:["комментарий", "комментария", "комментариев"]}}
+```
+Так же может быть использован внутри AngularJs контроллеров, директив, сервисов и тд.
+
+```
+pluralize(count, ["комментарий", "комментария", "комментариев"])
+```
+
+## Сервис авторизации
+Работает в связке с devise. Позволяет обеспечить ajax-авторизацию и ajax-выход.
+
+Для правильной работы сервиса необходимо сгенерировать devise-контроллеры командой:
+```
+rails generate devise:controllers users
+```
+
+Далее оптимизировать users/session_controller.rb для работы с ajax:
+```
+class Users::SessionsController < Devise::SessionsController
+
+  def create
+    self.resource = warden.authenticate(auth_options)
+    if self.resource
+      sign_in(resource_name, self.resource)
+      render json: {msg: "Осуществляется вход в систему"}
+    else
+      render json: {msg: "Email или пароль указаны неверно"}, status: 401
+    end
+  end
+
+  def destroy
+    Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
+    render json: {msg: "Осуществлен выход из системы"}
+  end
+
+end
+```
+
+Все готово для авторизации. Теперь создадим простую форму авторизации:
+```
+form
+  input type="email" ng-model="Sign.user.email"
+  input type="password" ng-model="Sign.user.password"
+  button ng-click="Sign.in(Sign.user)"
+```
+
+Все остальное сервис сделает за нас. Для удаления сессии необходимо вызвать метод Sign.out()
+```
+a ng-click="Sign.out()" Выход
+```
