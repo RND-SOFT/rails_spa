@@ -247,7 +247,7 @@ class PostsController < ApplicationController
     @post = current_user.initiatives.new post_params
 
     if @post.save
-      associate [:documents, :images], for: @post
+      associate :images, for: @post
       render json: {msg: "Пост успешно создан!"}
     else
       render json: {errors: @post.errors}, status: 422
@@ -257,4 +257,7 @@ class PostsController < ApplicationController
 end
 ```
 
-Метод associate инкапсулирован внутри гема и доступен внутри любого контроллера, унаследованного от ActionController::Base
+Метод associate инкапсулирован внутри гема и доступен внутри любого контроллера, унаследованного от ActionController::Base. Принимает так же поля в качестве массива
+```
+associate [:images, :documents], for: @post
+```
