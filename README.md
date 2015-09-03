@@ -35,7 +35,7 @@ angular.module('app', ['rails_spa'])
 Для корректной работы требует гемы [js-routes](https://github.com/railsware/js-routes), [slim-rails](https://github.com/slim-template/slim-rails), [gon](https://github.com/gazay/gon).
 
 ## Структура приложения
-Для структурированности вашего и его адекватной интеграции с Rails Assets используйте следующую структуру:
+Для структурированности вашего приложения и его адекватной интеграции с Rails Assets Pipeline используйте следующую структуру:
 
 ```
 /javascripts
