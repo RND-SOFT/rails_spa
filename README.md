@@ -14,7 +14,7 @@
 Для установки гема добавьте в Gemfile следующую строчку:
 
 ```
-gem 'rails_spa'
+gem 'rails_spa', git: 'git@github.com:storuky/rails_spa.git'
 ```
 
 Далее необходимо подключить js и css библиотеки в ваши assets-файлы(по умолчанию application.js и application.scss). 
@@ -207,9 +207,14 @@ belongs_to :user
 belongs_to :imageable, polymorphic: true
 ```
 
-Для моделей User и Post укажем связь с Image:
+Для модели User связь с Image:
 ```
 has_many :images
+```
+
+Для модели Post
+```
+has_many :images, as: :imageable
 ```
 
 Сгенерируем контроллер images
