@@ -28,7 +28,7 @@ gem 'rails_spa'
 angular.module('app', ['rails_spa'])
 ```
 
-Для корректной работы требует гемы [js-routes](https://github.com/railsware/js-routes) и [gon](https://github.com/gazay/gon).
+Для корректной работы требует гемы [js-routes](https://github.com/railsware/js-routes), [slim-rails](https://github.com/slim-template/slim-rails), [gon](https://github.com/gazay/gon).
 
 ## Структура приложения
 Для структурированности вашего и его адекватной интеграции с Rails Assets используйте следующую структуру:
@@ -146,4 +146,31 @@ form
 Все остальное сервис сделает за нас. Для удаления сессии необходимо вызвать метод Sign.out()
 ```
 a ng-click="Sign.out()" Выход
+```
+
+## Кастомный скролл
+Для того, чтобы заменить браузерный скролл на кастомный, достатночно на нужном блоке объявить аттрибут scroll
+```
+div scroll="" rebuild="{{items}}" axis="y"
+  div ng-repeat="item in items"
+```
+
+## dcbox
+**dcbox** — отличная альтернатива для lightbox. Не требует никаких зависимостей, выглядит приятно и стабильно работает во всех современных браузерах.
+
+```
+.dcbox rebuild=""
+  a href="{{image.url}}" ng-repeat="image in images"
+    img src="{{image.thumb.url}}"
+```
+
+## Attachments
+Строит список ссылок на файлы прикреплений в форме
+```
+attachments destroy-url="Routes.document_path" attachments="[{href: '/file1', title: 'Файл 1'}, {href: '/file2', title: 'Файл 2'}]"
+```
+
+## Слайдер изображений
+```
+slider destroy-url="Routes.image_path" slides="[{original: '/image1.png', thumb: '/image1-thimb.png'}, {original: '/image2.png', thumb: '/image2-thimb.png'}]"
 ```
