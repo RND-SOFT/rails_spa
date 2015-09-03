@@ -54,12 +54,14 @@ angular.module('app', ['rails_spa'])
 ```
 
 ## 2. Контроллеры
-Создание нового AngularJs-контроллера
-```
-rails g ng_controller controller_name
-```
-. Хорошей практикой является наличие отдельного контроллера под каждую страницу. В случае похожести контроллеров, общие части следует выносить в сервисы.
+Хорошей практикой является наличие отдельного контроллера под каждую страницу. В случае похожести контроллеров, общие части следует выносить в сервисы.
 
+**Пример 2.1** *Создание нового AngularJs-контроллера*
+```
+rails g ng_controller home
+```
+
+**Пример 2.2** *Пример сгенерированного AngularJs-контроллера*
 ```
 app.controller('HomeCtrl', ['$scope', 'Page', function ($scope, Page) {
   var ctrl = this;
@@ -70,12 +72,14 @@ app.controller('HomeCtrl', ['$scope', 'Page', function ($scope, Page) {
 
 Сервис Page инкапсулирован внутри гема. Он отвечает за текущее состояние страницы. В нем удобно хранить название текущей страницы для подсветки соответствующего пункта в меню. Данный сервис находится в $rootScope и доступен внутри шаблнизатора как:
 
+**Пример 2.3** *Сервис Page ынутри шаблонизатора*
 ```
 {{Page.current}}
 ```
 
 Для навигации можно использовать следующий прием (синтаксис шаблонизатора [slim](https://github.com/slim-template/slim-rails))
 
+**Пример 2.4** *Добавление класса active для текущей страницы*
 ```
 nav
   a href="/home" ng-class="{active: Page.current == 'home'}"
@@ -86,72 +90,69 @@ nav
 
 Для того, чтобы отобразить пользователю сообщение, пришедшее с сервера, необходимо, чтобы в ответе присутствовало поле msg.
 
-*Нотис зеленого цвета*
+**Пример 3.1** *Рендеринг зеленого нотиса*
 ```
 render json: {msg: "Все отлично"}
 ```
 
-*Нотис красного цвета*
+**Пример 3.2** *Рендеринг красного нотиса*
 ```
 render json: {msg: "Запись не найдена"}, status: 404
 ```
 
-## Валидация форм
+## 4. Валидация форм
 
 Для валидации форм необходимо, чтобы каждый элемент формы был обернут в тег с id, соответствующим названию данного поля в базе данных. Тогда в случае наличия в ответе поле errors будет произведена подсветка полей и под каждым полем будет выведена соответстующая ошибка.
 
+**Пример 4.1** *Отображение ошибок на форме*
 ```
 render json: {errors: @record.errors}, status: 422
 ```
 
-Может быть скомбинировано с нотификацией
+**Пример 4.2** *Комбинация с нотификацией*
 ```
 render json: {errors: @record.errors, msg: "Ошибка при сохранении"}, status: 422
 ```
 
-## Плюрализация
+## 5. Плюрализация
 
 Написана фабрика и фильтр для плюрализации на русский язык. Может быть вызван внутри шаблонизатора, как
+
+**Пример 5.1** *Плюрализация внутри шаблнизатора*
 ```
 {{comments.count | plur:["комментарий", "комментария", "комментариев"]}}
 ```
 Так же может быть использован внутри AngularJs контроллеров, директив, сервисов и тд.
 
+**Пример 5.2** *Плюрализация внутри котроллера/директивы/сервиса*
 ```
 pluralize(count, ["комментарий", "комментария", "комментариев"])
 ```
 
-## Сервис авторизации
+## 6. Сервис авторизации
 Работает в связке с devise. Позволяет обеспечить ajax-авторизацию и ajax-выход.
 
 Для правильной работы сервиса необходимо сгенерировать devise-контроллеры командой:
+
+**Пример 6.1** *Генерация devise-контроллеров для работы через ajax*
 ```
-rails generate devise:controllers users
+rails generate spa_devise users
 ```
 
-Далее оптимизировать users/session_controller.rb для работы с ajax:
+В routes.rb необходимо указать эти контроллеры для devise_for
+
+**Пример 6.2** *routes.rb для devise*
 ```
-class Users::SessionsController < Devise::SessionsController
-
-  def create
-    self.resource = warden.authenticate(auth_options)
-    if self.resource
-      sign_in(resource_name, self.resource)
-      render json: {msg: "Осуществляется вход в систему"}
-    else
-      render json: {msg: "Email или пароль указаны неверно"}, status: 401
-    end
-  end
-
-  def destroy
-    Devise.sign_out_all_scopes ? sign_out : sign_out(resource_name)
-    render json: {msg: "Осуществлен выход из системы"}
-  end
-
-end
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    registrations: 'users/registrations'
+  }
 ```
+
 
 Все готово для авторизации. Теперь создадим простую форму авторизации:
+
+**Пример 6.3** *Форма авторизации*
 ```
 form
   input type="email" ng-model="Sign.user.email"
@@ -159,109 +160,79 @@ form
   button ng-click="Sign.in(Sign.user)"
 ```
 
+**Пример 6.4** *Удаление сессии. Выход*
 Все остальное сервис сделает за нас. Для удаления сессии необходимо вызвать метод Sign.out()
 ```
 a ng-click="Sign.out()" Выход
 ```
 
-## Кастомный скролл
+## 7. Кастомный скролл
 Для того, чтобы заменить браузерный скролл на кастомный, достатночно на нужном блоке объявить аттрибут scroll
+
+**Пример 7.1** *Кастомный скролл*
 ```
 div scroll="" rebuild="{{items}}" axis="y"
   div ng-repeat="item in items"
 ```
 
-## dcbox
+**rebuild** – сообщает директиве о том, что скролл необходимо перестроить, так как размер контейнера изменился. axis указывает ось скрола.
+
+## 8. dcbox
 **dcbox** — отличная альтернатива для lightbox. Не требует никаких зависимостей, выглядит приятно, стабильно работает во всех современных браузерах.
 
+**Пример 8.1** *dcbox*
 ```
-.dcbox rebuild=""
+.dcbox rebuild="{{images}}"
   a href="{{image.url}}" ng-repeat="image in images"
     img src="{{image.thumb.url}}"
 ```
 
-## Attachments
+**rebuild** – сообщает директиве о том, что скролл необходимо перестроить, так как размер контейнера изменился. axis указывает ось скрола.
+
+## 9. Attachments
 Строит список ссылок на файлы прикреплений в форме
+
+**Пример 9.1** *Отображение прикреплений на форме*
 ```
 attachments destroy-url="Routes.document_path" attachments="[{id: 1, href: '/file1', title: 'Файл 1'}, {id: 2, href: '/file2', title: 'Файл 2'}]"
 ```
 Для задания такого формата используйте gem [active_model_serializers](https://github.com/rails-api/active_model_serializers)
 
-## Слайдер изображений
+## 10. Слайдер изображений
+
+**Пример 10.1** *Пример слайдера с шириной 4 слайда*
 ```
 slider max-slides="4" destroy-url="Routes.image_path" slides="[{id: 1, original: '/image1.png', thumb: '/image1-thumb.png'}, {id: 2, original: '/image2.png', thumb: '/image2-thumb.png'}]"
 ```
 Для задания такого формата используйте gem [active_model_serializers](https://github.com/rails-api/active_model_serializers)
 
-## TinyMCE
+## 11. TinyMCE
 Требует подключения скриптов и стилей TinyMCE 4
+
+**Пример 11.1** *AngularJS TinyMCE 4*
 ```
 textarea.tinymce ng-model="content"
 ```
 
-## Загрузка файлов на сервер
+## 12. Загрузка файлов на сервер
+
+**Пример 12.2** *ng-model для input type="file"*
 ```
 input type="file" multiple="true" fileupload="Routes.images_path()" ng-model="ctrl.initiative.documents"
 ```
 ng-model сочетается с директивами attachments и slider.
 
-Хорошей практикой является предзагрузка файлов на сервер до отправки самой формы. Рассмотрим наиболее общий тип работы с использованием полиморфных связей на примере гема [carrierwave](https://github.com/carrierwaveuploader/carrierwave).
-Создадим модель image
-```
-rails g model image file:string imageable_id:integer imageable_type:integer user_id:integer
-```
-Сгенерируем для нее uploader командой
-```
-rails g uploader image
-```
+Хорошей практикой является предзагрузка файлов на сервер до отправки самой формы. Сгенерирум аплоадер, сериалайзер, модель, миграцию и контроллер для загрузки файла следующей командой
 
-Внутри модели определим связь и замаунтим загрузчик
-```
-mount_uploader :file, ImageUploader
-
-belongs_to :user
-belongs_to :imageable, polymorphic: true
-```
-
-Для модели User связь с Image:
-```
-has_many :images
-```
-
-Для модели Post
-```
-has_many :images, as: :imageable
-```
-
-Сгенерируем контроллер images
-```
-rails g controller images
-```
-
-Добавим в контроллер images 2 метода.
+**Пример 12.2**
 
 ```
-def create
-  images = params[:attachments].map do |attachment|
-    image = Image.new(file: attachment, user_id: current_user.id)
-    if image.save
-      image
-    else
-      nil
-    end
-  end
-
-  render json: images.compact, each_serializer: ImageSerializer, root: false
-end
-
-def destroy
-  current_user.images.find_by(id: params[:id]).destroy
-  render json: {}
-end
+rails g spa_uploader image
 ```
 
 При загрузке изображений, связь будет создаваться только для пользователей. Тогда при сабмите формы мы можем установить связь с моделью уже непосредственно внутри методов create и update модели.
 
+**Пример 12.3** *Пример контроллера, создающего связь для загруженных файлов*
 ```
 class PostsController < ApplicationController
   def create
@@ -279,12 +250,18 @@ end
 ```
 
 Метод associate инкапсулирован внутри гема и доступен внутри любого контроллера, унаследованного от ActionController::Base. Принимает так же поля в качестве массива
+
+**Пример 12.4** *Передача массива прикреплений*
+
 ```
 associate [:images, :documents], for: @post
 ```
 
-## Принцип построения SPA-приложения
+## 13. Принцип построения SPA-приложения
 Построение рельсового SPA-приложение начинается с редактирования routes.rb
+
+**Пример 13.1** *routes.rb для spa-приложения*
+
 ```
 devise_for :users, controllers: {
   sessions: 'users/sessions',
@@ -306,6 +283,8 @@ get '/*path' => 'application#index'
 
 Индексная страница приложения находится в ApplicationController. При этом здесь же мы выключаем рельсовый layout
 
+**Пример 13.2** *application_controller.rb для spa-приложения*
+
 ```
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
@@ -319,11 +298,14 @@ end
 ```
 
 Далее необходимо внутри вьхи views/layouts/application.html.slim зменить =yield на ng-view. Так же необходимо прописать внутри тега head тег
+
+**Пример 13.3** *Тег base для spa-приложения*
 ```
 <base href="/">
 ```
 Все готово для того, чтобы строить spa-роутинг приложения. Для этого в /app/assets/javascripts создаем файл routes.js со следующим содержимым:
 
+**Пример 13.4** *SPA-роутинг*
 ```
 app.config(['$routeProvider', function ($routeProvider) {  
   $routeProvider
