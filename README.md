@@ -304,25 +304,9 @@ end
 ```
 <base href="/">
 ```
-Все готово для того, чтобы строить spa-роутинг приложения. Для этого в /app/assets/javascripts создаем файл routes.js со следующим содержимым:
+Все готово для того, чтобы строить spa-роутинг приложения. Создать его очень просто. Достаточно воспользоваться генератором
 
-**Пример 13.4** *SPA-роутинг*
+**Пример 13.3** *Тег base для spa-приложения*
 ```
-app.config(['$routeProvider', function ($routeProvider) {  
-  $routeProvider
-    .when('/', {
-      templateUrl: Routes.home_path(),
-      controller: 'HomeCtrl as ctrl',
-      reloadOnSearch: false
-    })
-    .when('/posts', {
-      templateUrl: Routes.posts_path(),
-      controller: 'PostsCtrl as ctrl',
-      reloadOnSearch: false
-    })
-    .otherwise({
-      redirectTo: '/'
-    })
-}]);
+rails g ng_routes
 ```
- 
