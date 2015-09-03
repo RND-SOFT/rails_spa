@@ -9,7 +9,7 @@ rails_spa.directive('tinymce', ['$timeout', function ($timeout) {
     }, // {} = isolate, true = child, false/undefined = no change
     // controller: function($scope, $element, $attrs, $transclude) {},
     // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-    restrict: 'C', // E = Element, A = Attribute, C = Class, M = Comment
+    restrict: 'AEC', // E = Element, A = Attribute, C = Class, M = Comment
     // template: '',
     // templateUrl: '',
     // replace: true,

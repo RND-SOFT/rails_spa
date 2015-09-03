@@ -1,5 +1,5 @@
 script id="slider.html" type="text/ng-template"
-  .slider ng-show="slides.length" ng-class="{single: slides.length<=3}"
+  .slider ng-show="slides.length" ng-class="{single: slides.length<=maxSlides}"
     .slider__prev ng-click="num = num ? num - 1 : 0"
       i.icon-arrow_left
     .slider__next ng-click="num = num == slides.length-3 ? num : num + 1"

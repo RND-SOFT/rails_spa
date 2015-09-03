@@ -1,5 +1,0 @@
-script id="radio.html" type="text/ng-template"
-  ul.radio
-    li.radio__button ng-repeat="option in options" ng-class="{active: isActive(option.id)}" ng-click="setActive(option.id)"
-      .radio__button__text
-        | {{option.title}}

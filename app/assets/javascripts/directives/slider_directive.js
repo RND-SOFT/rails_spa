@@ -6,7 +6,8 @@ rails_spa.directive('slider', ['$http', function ($http) {
     // terminal: true,
     scope: {
       slides: "=slides",
-      destroyUrl: "=destroyUrl"
+      destroyUrl: "=destroyUrl",
+      maxSlides: "=maxSlides"
     }, // {} = isolate, true = child, false/undefined = no change
     // controller: function($scope, $element, $attrs, $transclude) {},
     // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements

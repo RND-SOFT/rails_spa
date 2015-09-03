@@ -1,18 +1,8 @@
 rails_spa.service('Sign', ['$http', '$rootScope', function ($http, $rootScope) {
   var Sign = this;
 
-  Sign.open = function (type) {
-    Sign.opened = type;
-    $rootScope.showOverlay = true;
-  }
-
-  Sign.close = function (type) {
-    Sign.opened = false;
-    $rootScope.showOverlay = false;
-  }
-
-  Sign.in = function () {
-    $http.post(Routes.user_session_path(), {user: Sign.form})
+  Sign.in = function (user) {
+    $http.post(Routes.user_session_path(), {user: user})
       .success(function (res) {
         window.location.reload()
       })

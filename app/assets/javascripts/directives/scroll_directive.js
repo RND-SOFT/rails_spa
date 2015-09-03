@@ -16,8 +16,10 @@ rails_spa.directive('scroll', ['$timeout', function($timeout) {
     link: function($scope, el, attrs, controller) {
       if (attrs.axis=='x') {
         Ps.initialize(el[0], {suppressScrollY: true, useBothWheelAxes: true});
-      } else {
+      } else if (attrs.axis=='y') {
         Ps.initialize(el[0], {suppressScrollX: true});
+      } else {
+        Ps.initialize(el[0]);
       }
 
       $scope.$watch(function () {
