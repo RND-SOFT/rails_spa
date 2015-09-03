@@ -18,4 +18,6 @@ var rails_spa = angular.module("rails_spa", ["ngResource", "ngRoute", "ngSanitiz
 rails_spa.run(['$rootScope', 'Page', 'Sign', function ($rootScope, Page, Sign) {
   $rootScope.Page = Page;
   $rootScope.Sign = Sign;
+  $rootScope.gon = gon;
+  $rootScope.Routes = Routes;
 }])
