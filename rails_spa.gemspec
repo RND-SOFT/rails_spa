@@ -18,5 +18,8 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.3'
 
+  gem.add_dependency "slim-rails"
+  gem.add_dependency "js-routes"
+  gem.add_dependency "gon"
 
 end
