@@ -175,3 +175,8 @@ attachments destroy-url="Routes.document_path" attachments="[{id: 1, href: '/fil
 slider max-slides="4" destroy-url="Routes.image_path" slides="[{id: 1, original: '/image1.png', thumb: '/image1-thumb.png'}, {id: 2, original: '/image2.png', thumb: '/image2-thumb.png'}]"
 ```
 
+## TinyMCE
+Требует подключения скриптов и стилей TinyMCE 4
+```
+textarea.tinymce ng-model="content"
+```
