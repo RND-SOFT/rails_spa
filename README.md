@@ -32,7 +32,8 @@ gem 'rails_spa', git: 'git@github.com:storuky/rails_spa.git'
 angular.module('app', ['rails_spa'])
 ```
 
-Для корректной работы требует следующие гемы
+Для корректной работы требует следующие гемы:
+
 1. [js-routes](https://github.com/railsware/js-routes)
 2. [slim-rails](https://github.com/slim-template/slim-rails)
 3. [gon](https://github.com/gazay/gon)
