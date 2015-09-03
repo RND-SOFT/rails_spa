@@ -32,9 +32,14 @@ gem 'rails_spa', git: 'git@github.com:storuky/rails_spa.git'
 angular.module('app', ['rails_spa'])
 ```
 
-Для корректной работы требует гемы [js-routes](https://github.com/railsware/js-routes), [slim-rails](https://github.com/slim-template/slim-rails), [gon](https://github.com/gazay/gon).
+Для корректной работы требует следующие гемы
+1. [js-routes](https://github.com/railsware/js-routes)
+2. [slim-rails](https://github.com/slim-template/slim-rails)
+3. [gon](https://github.com/gazay/gon)
+4. [carrierwave](https://github.com/carrierwaveuploader/carrierwave)
+5. [active_model_serializers](https://github.com/rails-api/active_model_serializers)
 
-## Структура приложения
+## 1. Структура приложения
 Для структурированности вашего приложения и его адекватной интеграции с Rails Assets Pipeline используйте следующую структуру:
 
 ```
@@ -48,9 +53,14 @@ angular.module('app', ['rails_spa'])
   routes.js
 ```
 
-## Контроллеры
-Создадим в каталоге /controllers новый контроллер. Назовем его home_ctrl.js. Хорошей практикой является наличие отдельного контроллера под каждую страницу. В случае похожести контроллеров, общие части следует выносить в сервисы.
+## 2. Контроллеры
+Создание нового AngularJs-контроллера
+```
+rails g ng_controller controller_name
+```
+. Хорошей практикой является наличие отдельного контроллера под каждую страницу. В случае похожести контроллеров, общие части следует выносить в сервисы.
 
+*Пример 2.1*
 ```
 app.controller('HomeCtrl', ['$scope', 'Page', function ($scope, Page) {
   var ctrl = this;
@@ -60,26 +70,28 @@ app.controller('HomeCtrl', ['$scope', 'Page', function ($scope, Page) {
 ```
 
 Сервис Page инкапсулирован внутри гема. Он отвечает за текущее состояние страницы. В нем удобно хранить название текущей страницы для подсветки соответствующего пункта в меню. Данный сервис находится в $rootScope и доступен внутри шаблнизатора как:
+*Пример 2.2*
 ```
 {{Page.current}}
 ```
 
-Для навигации можно использовать следующий прием (синтаксис шаблонизатора [slim](https://github.com/slim-template/slim-rails)):
-
+Для навигации можно использовать следующий прием (синтаксис шаблонизатора [slim](https://github.com/slim-template/slim-rails))
+*Пример 2.3*
 ```
 nav
   a href="/home" ng-class="{active: Page.current == 'home'}"
     | Домашняя страница
 ```
 
-## Нотификация
+## 3. Нотификация
 
 Для того, чтобы отобразить пользователю сообщение, пришедшее с сервера, необходимо, чтобы в ответе присутствовало поле msg.
+*Пример 3.1. Нотис зеленого цвета*
 ```
 render json: {msg: "Все отлично"}
 ```
 
-В случае ошибки:
+*Пример 3.2. Нотис красного цвета*
 ```
 render json: {msg: "Запись не найдена"}, status: 404
 ```
