@@ -1,23 +1,23 @@
-$:.push File.expand_path("../lib", __FILE__)
+# -*- encoding: utf-8 -*-
+require File.expand_path('../lib/rails_spa/version', __FILE__)
 
-# Maintain your gem's version:
-require "rails_spa/version"
+Gem::Specification.new do |gem|
+  gem.name          = "rails_spa" 
+  gem.authors       = ["Kononenko Paul"]
+  gem.email         = ["kinnalru@gmail.com"]
+  gem.description   = "Lol"
+  gem.summary       = "Lal"
+  #gem.homepage      = "https://github.com/bokmann/font-awesome-rails"
+  #gem.licenses      = ["MIT", "SIL Open Font License"]
 
-# Describe your gem and declare its dependencies:
-Gem::Specification.new do |s|
-  s.name        = "rails_spa"
-  s.version     = RailsSpa::VERSION
-  s.authors     = ["Kononenko Paul"]
-  s.email       = ["storuky@gmail.com"]
-  s.homepage    = "https://github.com/storuky"
-  s.summary     = "Create your single page application with rails"
-  s.description = ""
-  s.license     = "MIT"
+  gem.version       = Gisr::Rails::VERSION
+  gem.files         = `git ls-files`.split("\n")
+  gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  gem.require_paths = ["lib"]
 
-  s.files = Dir["{app,config,db,lib,vendor}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
-  s.test_files = Dir["test/**/*"]
+  gem.required_ruby_version = '>= 1.9.3'
 
-  s.add_dependency "rails", "~> 4.1.8"
+  #gem.add_dependency "railties", ">= 3.2", "< 5.0"
 
-  s.add_development_dependency "sqlite3"
 end

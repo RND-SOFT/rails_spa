@@ -1,2 +1,1 @@
-module RailsSpa
-end
+require "rails_spa/engine" if defined?(::Rails)
