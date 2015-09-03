@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   #gem.homepage      = "https://github.com/bokmann/font-awesome-rails"
   #gem.licenses      = ["MIT", "SIL Open Font License"]
 
-  gem.version       = Gisr::Rails::VERSION
+  gem.version       = RailsSpa::VERSION
   gem.files         = `git ls-files`.split("\n")
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
@@ -18,6 +18,5 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version = '>= 1.9.3'
 
-  #gem.add_dependency "railties", ">= 3.2", "< 5.0"
 
 end

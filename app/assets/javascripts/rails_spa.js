@@ -1,4 +1,14 @@
 /*
+*= require perfect-scrollbar.min
+*= require pace.min
+*= require dcbox
+*= require angular
+*= require ng-notify
+*= require underscore
+*= require angular-resource
+*= require angular-sanitize
+*= require angular-route
+*= require angular-locale_ru-ru
 *= require_self
 *= require_tree .
 */

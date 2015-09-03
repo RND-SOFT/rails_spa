@@ -1,0 +1,26 @@
+.attachments {
+  list-style-type: none;
+  padding: 0;
+  margin: 10px 0 0 0;
+
+  li {
+    margin-bottom: 5px;
+  }
+
+  .icon-clip {
+    color: #0099bb;
+    margin-right: 10px;
+  }
+
+  a {
+    color: #333333;
+  }
+
+  &__delete {
+    color: red;
+    font-size: 30px;
+    vertical-align: middle;
+    display: inline-block;
+    cursor: pointer;
+  }
+}
