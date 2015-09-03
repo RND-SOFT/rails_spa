@@ -218,7 +218,7 @@ textarea.tinymce ng-model="content"
 
 ## 12. Загрузка файлов на сервер
 
-**Пример 12.2** *ng-model для input type="file"*
+**Пример 12.1** *ng-model для input type="file"*
 ```
 input type="file" multiple="true" fileupload="Routes.images_path()" ng-model="ctrl.initiative.documents"
 ```
