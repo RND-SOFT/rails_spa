@@ -40,9 +40,10 @@ angular.module('app', ['rails_spa'])
 4. [carrierwave](https://github.com/carrierwaveuploader/carrierwave)
 5. [active_model_serializers](https://github.com/rails-api/active_model_serializers)
 
-## 1. Структура приложения
+## 1. Структура приложения. Скаффолдинг
 Для структурированности вашего приложения и его адекватной интеграции с Rails Assets Pipeline используйте следующую структуру:
 
+**Пример 1.1** *Структура AngularJS приложения*
 ```
 /javascripts
   /controllers
@@ -52,6 +53,13 @@ angular.module('app', ['rails_spa'])
   application.js
   config.js
   routes.js
+```
+
+Скаффолдинг позволяет значительно ускорить разработку, так как сразу создает все необходимые контроллеры, модели и сервисы необходимые для обеспечения функциональности CRUD.
+
+**Пример 1.2** *Скаффолдинг*
+```
+rails g spa_scaffold post title:string description:text user_id:integer
 ```
 
 ## 2. Контроллеры
