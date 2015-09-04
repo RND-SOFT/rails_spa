@@ -1,1 +1,18 @@
 h1 Главная
+br
+a href="/<%= class_name.downcase.pluralize %>/new" Создать
+
+table
+  thead
+    th ng-repeat='th in <%= attributes.map(&:name).to_json %>'
+      | {{th}}
+    th
+  tbody
+    tr ng-repeat='<%= class_name.downcase.singularize%> in ctrl.<%= class_name.downcase.pluralize%>'
+      td ng-repeat='td in <%= attributes.map(&:name) %>'
+        | {{<%= class_name.downcase.singularize%>[td]}}
+
+      td
+        a ng-href="/<%= class_name.downcase.pluralize %>/{{<%= class_name.downcase.singularize%>.id}}" Просмотр
+        a ng-href="/<%= class_name.downcase.pluralize %>/{{<%= class_name.downcase.singularize%>.id}}/edit" Редактирование
+        a ng-click="ctrl.delete<%= class_name.singularize%>(<%= class_name.downcase.singularize%>.id)" ng-href="" Удаление

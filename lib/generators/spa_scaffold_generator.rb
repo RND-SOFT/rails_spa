@@ -34,10 +34,11 @@ class SpaScaffoldGenerator < Rails::Generators::NamedBase
 
   def create_ng_controller
     template "ng_controller.js", File.join('app/assets/javascripts/controllers', class_path, "#{file_name.pluralize}_ctrl.js")
+    template "ng_form_controller.js", File.join('app/assets/javascripts/controllers', class_path, "#{file_name.pluralize}_form_ctrl.js")
   end
 
   def create_ng_service
-    template "ng_service.js", File.join('app/assets/javascripts/services', class_path, "#{file_name.singularize}.js")
+    template "ng_service.js", File.join('app/assets/javascripts/services', class_path, "#{file_name.singularize}_service.js")
   end
 
   def create_views
@@ -52,15 +53,33 @@ class SpaScaffoldGenerator < Rails::Generators::NamedBase
     file = File.read("app/assets/javascripts/routes.js")
 
     replace_to = <<-DOC
-    .when('/', {
-      templateUrl: Routes.#{class_name.singularize.downcase}_path(),
-      controller: '#{class_name.singularize}Ctrl as ctrl',
+    .when('/#{class_name.pluralize.downcase}', {
+      templateUrl: Routes.#{class_name.pluralize.downcase}_path(),
+      controller: '#{class_name.pluralize}Ctrl as ctrl',
       reloadOnSearch: false
     })
-    .otherwise({
+    .when('/#{class_name.pluralize.downcase}/new', {
+      templateUrl: Routes.new_#{class_name.singularize.downcase}_path(),
+      controller: '#{class_name.pluralize}FormCtrl as ctrl',
+      reloadOnSearch: false
+    })
+    .when('/#{class_name.pluralize.downcase}/:id/edit', {
+      templateUrl: Routes.edit_#{class_name.singularize.downcase}_path('id'),
+      controller: '#{class_name.pluralize}FormCtrl as ctrl',
+      reloadOnSearch: false
+    })
+    .when('/#{class_name.pluralize.downcase}/:id', {
+      templateUrl: Routes.#{class_name.singularize.downcase}_path('id'),
+      controller: '#{class_name.pluralize}Ctrl as ctrl',
+      reloadOnSearch: false
+    })
     DOC
 
-    file.sub!('.otherwise({', replace_to.strip)
+    if file.include?(replace_to)
+      file.sub!(replace_to.strip, "")
+    else
+      file.sub!('.otherwise({', replace_to.strip + ".otherwise({")
+    end
 
     File.open('app/assets/javascripts/routes.js', 'w') do |f|
       f.write(file)
@@ -70,11 +89,15 @@ class SpaScaffoldGenerator < Rails::Generators::NamedBase
 
   def update_routes_rb
     file = File.read("config/routes.rb")
-    replace_to = <<-DOC
-    scope :spa do    
+    if file.include?("resources :#{class_name.pluralize.downcase}")
+      file.sub!("resources :#{class_name.pluralize.downcase}", "")
+    else
+      replace_to = <<-DOC
+      scope :spa do
     resources :#{class_name.downcase}
-    DOC
-    file.sub!('scope :spa do', replace_to.strip)
+      DOC
+      file.sub!('scope :spa do', replace_to.strip)
+    end
 
     File.open('config/routes.rb', 'w') do |f|
       f.write(file)

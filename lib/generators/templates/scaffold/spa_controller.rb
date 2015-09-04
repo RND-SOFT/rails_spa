@@ -17,7 +17,7 @@ class <%= controller_name %> < ApplicationController
   end
 
   def create
-    <%= instance_name %> = <%= model_name %>.new <%= params %>
+    <%= instance_name %> = current_user.<%= model_name.pluralize.downcase %>.new <%= params %>
     respond_to do |format|
       format.json {
         if <%= instance_name %>.save
