@@ -17,7 +17,6 @@ class SpaScaffoldGenerator < Rails::Generators::NamedBase
   end
 
   def create_controller
-    puts "#{attributes}"
     template "spa_controller.rb", File.join('app/controllers', class_path, "#{file_name.pluralize}_controller.rb")
   end
 
@@ -47,5 +46,39 @@ class SpaScaffoldGenerator < Rails::Generators::NamedBase
     template "views/edit.html.slim", File.join("app/views/#{file_name.pluralize}/edit.html.slim")
     template "views/new.html.slim", File.join("app/views/#{file_name.pluralize}/new.html.slim")
     template "views/_form.html.slim", File.join("app/views/#{file_name.pluralize}/_form.html.slim")
+  end
+
+  def update_routes_js
+    file = File.read("app/assets/javascripts/routes.js")
+
+    replace_to = <<-DOC
+    .when('/', {
+      templateUrl: Routes.#{class_name.singularize.downcase}_path(),
+      controller: '#{class_name.singularize}Ctrl as ctrl',
+      reloadOnSearch: false
+    })
+    .otherwise({
+    DOC
+
+    file.sub!('.otherwise({', replace_to.strip)
+
+    File.open('app/assets/javascripts/routes.js', 'w') do |f|
+      f.write(file)
+    end
+
+  end
+
+  def update_routes_rb
+    file = File.read("config/routes.rb")
+    replace_to = <<-DOC
+    scope :spa do    
+    resources :#{class_name.downcase}
+    DOC
+    file.sub!('scope :spa do', replace_to.strip)
+
+    File.open('config/routes.rb', 'w') do |f|
+      f.write(file)
+    end
+
   end
 end
