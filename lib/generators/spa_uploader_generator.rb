@@ -3,7 +3,7 @@ require 'active_support/core_ext'
 include Rails::Generators::Migration
 
 class SpaUploaderGenerator < Rails::Generators::NamedBase
-  source_root File.expand_path("../templates", __FILE__)
+  source_root File.expand_path("../templates/uploader", __FILE__)
 
   def self.next_migration_number(path)
     unless @prev_migration_nr

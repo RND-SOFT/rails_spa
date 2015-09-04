@@ -1,4 +1,4 @@
-class <%= class_name %>Controller < ApplicationController
+class <%= class_name %> < ActiveRecord::Base
   mount_uploader :file, <%= class_name %>Uploader
 
   belongs_to :user

@@ -1,0 +1,16 @@
+form
+  <%- attributes.each do |attribute| -%>
+  div
+    label <%= attribute.name %>
+  div
+    <%- if attribute.type == :integer -%>
+    input type="number" ng-model="ctrl.<%= class_name.singularize.downcase %>.<%= attribute.name %>"
+    <%- elsif attribute.type == :boolean -%>
+    input type="checkbox" ng-model="ctrl.<%= class_name.singularize.downcase %>.<%= attribute.name %>"
+    <%- elsif attribute.type == :text -%>
+    textarea ng-model="ctrl.<%= class_name.singularize.downcase %>.<%= attribute.name %>"
+    <%- else -%>
+    input type="text" ng-model="ctrl.<%= class_name.singularize.downcase %>.<%= attribute.name %>"
+    <%- end -%>
+  br
+  <%- end -%>
